@@ -15,6 +15,13 @@
         </div>
         {{/if}}
     {{else}}
-    <span class="header-logo-text">{{settings.store_logo.title}}</span>
+    <span class="header-logo-text" id="header-logo-text-path"></span>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+        var first = path.split('/')[0];
+        document.getElementById('header-logo-text-path').textContent = first ? first : '{{settings.store_logo.title}}';
+      });
+    </script>
     {{/if}}
 </a>
