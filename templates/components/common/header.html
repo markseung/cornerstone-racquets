@@ -16,6 +16,17 @@
     </a>
     {{> components/common/navigation}}
 
+    <!-- Top Level Category Selector -->
+    <nav class="header-category-selector" aria-label="Top Level Categories">
+        <ul class="header-category-list">
+            {{#each categories}}
+                <li class="header-category-item">
+                    <a href="{{url}}" class="header-category-link{{#if is_active}} is-active{{/if}}">{{name}}</a>
+                </li>
+            {{/each}}
+        </ul>
+    </nav>
+
     {{#if page_type '===' 'default'}}
         <h1 class="header-logo header-logo--{{theme_settings.logo-position}}">
             {{> components/common/store-logo}}
