@@ -1,27 +1,26 @@
 <a href="{{urls.home}}" class="header-logo__link" data-header-logo-link>
-    {{#if settings.store_logo.image}}
-        {{#if theme_settings.logo_size '===' 'original'}}
-        <img class="header-logo-image-unknown-size"
-             src="{{getImage settings.store_logo.image 'logo_size'}}"
-             alt="{{settings.store_logo.title}}"
-             title="{{settings.store_logo.title}}">
-        {{else}}
-        <div class="header-logo-image-container">
-            <img class="header-logo-image"
-                 src="{{getImage settings.store_logo.image 'logo_size'}}"
-                 srcset="{{getImageSrcset1x2x settings.store_logo.image theme_settings.logo_size}}"
-                 alt="{{settings.store_logo.title}}"
-                 title="{{settings.store_logo.title}}">
-        </div>
-        {{/if}}
-    {{else}}
-    <span class="header-logo-text" id="header-logo-text-path"></span>
+    <span class="header-logo-dynamic" id="header-logo-dynamic"></span>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+        // Map of theme_setting keys to logo image paths
+        var themeSettings = {
+          tennis: "{{theme_settings.tennis}}",
+          pickleball: "{{theme_settings.pickleball}}",
+          padle: "{{theme_settings.padle}}",
+          master: "{{settings.store_logo.image}}",
+          // Add more mappings as needed
+        };
+        var storeTitle = "{{settings.store_logo.title}}";
         var path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
         var first = path.split('/')[0];
-        document.getElementById('header-logo-text-path').textContent = first ? first : '{{settings.store_logo.title}}';
+        var logoContainer = document.getElementById('header-logo-dynamic');
+        var logoImg = themeSettings[first];
+
+        if (logoImg && logoImg !== "") {
+          logoContainer.innerHTML = '<img class="header-logo-image" src="' + logoImg + '" width=250 height=100 alt="' + first + '" title="' + first + '"> <span class="header-logo-category-name">' + (first ? first.charAt(0).toUpperCase() + first.slice(1) : storeTitle) + '</span>';
+        } else {
+          logoContainer.textContent = first ? first.charAt(0).toUpperCase() + first.slice(1) : storeTitle;
+        }
       });
     </script>
-    {{/if}}
 </a>
