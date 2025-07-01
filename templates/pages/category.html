@@ -2,6 +2,33 @@
 category:
     products:
         limit: {{theme_settings.categorypage_products_per_page}}
+gql: "query FeaturedProducts($categoryId: Int!) {
+  site {
+    search {
+      searchProducts(filters: {isFeatured: true, categoryEntityId: $categoryId}) {
+        products {
+          edges {
+            node {
+              name
+              path
+              prices {
+                price {
+                  value
+                  currencyCode
+                }
+              }
+              entityId
+              defaultImage {
+                url(width: 400)
+                altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}"
 ---
 {{inject "categoryProductsPerPage" theme_settings.categorypage_products_per_page}}
 {{#partial "head"}}
@@ -16,6 +43,34 @@ category:
 {{#partial "page"}}
 
 {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
+
+{{!-- Featured Products Section (GraphQL) --}}
+<div id="category-featured-products"></div>
+<script>
+        // Use the searchProducts result from the new query
+        var html = `
+            <section class="category-featured-products">
+                <h2 class="category-featured-products-heading">Featured Products</h2>
+                <div class="productGrid">
+                    <div class="product">
+                        {{#if gql.data.site.search.searchProducts.products}}
+{{#each gql.data.site.search.searchProducts.products.edges}}
+  {{#with node}}
+                        <a href="{{path}}">
+                            <img src="{{defaultImage.url}}" alt="{{defaultImage.altText}}" />
+                            <div class="product-title">{{name}}</div>
+                            <div class="product-price">{{prices.price.value}} {{prices.price.currencyCode}}</div>
+                        </a>
+                        {{/with}}
+  {{/each}}
+  {{/if}}
+                    </div>
+                </div>
+            </section>
+        `;
+        document.getElementById('category-featured-products').innerHTML = html;
+</script>
+
 {{#if category.image}}
     {{> components/common/responsive-img
         image=category.image
